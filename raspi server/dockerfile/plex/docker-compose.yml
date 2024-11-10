@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    container_name: plex
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PLEX_CLAIM=<claim_token>  # Thay thế bằng claim token của bạn (nếu cần)
+      - ADVERTISE_IP=http://raspi5.local:32400  # Thay IP của bạn
+      - ALLOWED_NETWORKS=0.0.0.0/0
+    volumes:
+      - /path/to/your/library:/config  # Đường dẫn tới thư mục cấu hình Plex
+      - /path/to/your/media:/data  # Đường dẫn tới thư mục media (phim, nhạc, ...)
+    ports:
+      - "32400:32400"  # Cổng Plex Media Server
+      - "32469:32469"  # Cổng DLNA (tuỳ chọn)
+      - "8324:8324"    # Cổng chia sẻ nội dung (tuỳ chọn)
+      - "1900:1900/udp"  # Cổng cho SSDP (tuỳ chọn)
+    devices:
+      - "/dev/dri:/dev/dri"  # Cần thiết cho việc mã hóa video (nếu có)
