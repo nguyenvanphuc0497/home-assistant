@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    ports:
+      - "8080:8080"  # Giao diện web Portainer
+    volumes:
+      - ./assets:/www/assets  # Kết nối Docker với Portainer
+    environment:
+      - INIT_ASSETS=1 # default, requires the config directory to be writable for the container user (see user option)
+    restart: unless-stopped

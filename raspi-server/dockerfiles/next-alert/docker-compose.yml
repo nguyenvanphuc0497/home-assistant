@@ -1,0 +1,24 @@
+version: "3"
+
+services:  
+  netalertx:
+    container_name: NetAlertX
+    hostname: NetAlertX
+    privileged: true
+    # use the below line if you want to test the latest dev image
+    # image: "jokobsk/netalertx-dev:latest" 
+    image: jokobsk/netalertx:latest
+    environment:
+      - TZ=Asia/Saigon
+      - PORT=20211
+    restart: always
+    volumes:
+      # - './netalertx/db:/app/db'
+      # - './netalertx/config:/app/config'
+      # Tao folder bang lenh tren bi loi ko cos permission cho db and config nen tam thoi dung volumes docker
+      - 'netalertx_data:/app/db'
+      - 'netalertx_data:/app/config'
+    network_mode: host
+volumes:
+  netalertx_data:
+  

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  jdownloader:
+    image: jlesage/jdownloader-2
+    container_name: jdownloader-2
+    ports:
+      - "5800:5800"  # Cổng để truy cập giao diện VNC
+    volumes:
+      - ./appdata/config:/config:rw  # Thư mục cấu hình
+      - ./downloads:/output:rw  # Thư mục lưu file tải về
+    restart: unless-stopped

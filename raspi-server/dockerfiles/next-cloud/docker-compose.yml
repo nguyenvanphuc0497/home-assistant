@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  nextcloudpi:
+    image: ownyourbits/nextcloudpi
+    container_name: nextcloudpi
+    ports:
+      - "4443:4443"
+      - "443:443"
+      - "84:80"
+    volumes:
+      - ncdata:/data
+    environment:
+      - DOMAIN=${DOMAIN} # Đặt biến DOMAIN nếu cần
+    restart: unless-stopped
+
+volumes:
+  ncdata:

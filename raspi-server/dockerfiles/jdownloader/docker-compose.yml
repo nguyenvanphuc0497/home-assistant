@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+   jdownloader:
+    image: jaymoulin/jdownloader
+    container_name: jdownloader
+    restart: always
+    user: 1001:100
+    volumes:
+        - ./appdata/config:/opt/JDownloader/app/cfg
+        - ./downloads:/opt/JDownloader/Downloads
+        # - </path/to/appdata/logs>:/opt/JDownloader/app/logs #optional
+        # - </path/to/appdata/extensions>:/opt/JDownloader/app/extensions #optional
+        - /etc/localtime:/etc/localtime:ro #optional
+    environment: 
+            # FILE_MYJD_USER: myjd-user #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            # FILE_MYJD_PASSWORD: myjd-password #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            MYJD_USER: "nguyenvanphuc0497@gmail.com" #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            MYJD_PASSWORD: "5$$FHL*_3R@@$4t" #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+            MYJD_DEVICE_NAME: raspi5 #optional
+            # XDG_DOWNLOAD_DIR: /opt/JDownloader/Downloads #optional
+    ports:
+        - 3129:3129
+    tty: true  
+    # secrets:
+    #     - myjd-user #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+    #     - myjd-password #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+
+# secrets:
+#   myjd-user: #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+#     file: ~/jdownloader/secrets/myjd_user.txt
+#   myjd-password: #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+#     file: ~/jdownloader/secrets/myjd_password.txt
