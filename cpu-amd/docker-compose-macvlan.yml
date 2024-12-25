@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Plex Media Server
+  plex-test:
+    image: plexinc/pms-docker
+    container_name: plex-test
+    environment:
+      - TZ=Asia/Ho_Chi_Minh         # Thay <timezone> bằng múi giờ của bạn (VD: Asia/Ho_Chi_Minh)
+      - PLEX_CLAIM=claim-v8GNJm6vP7euQtRaz4Tp  # Thay <claimToken> bằng mã token từ Plex
+    networks:
+      physical:
+        ipv4_address: 192.168.1.212
+    volumes:
+      - plex_test_config:/config    # Thư mục cấu hình Plex
+      - plex_test_transcode:/transcode # Thư mục tạm thời cho transcoding
+      - /srv/dev-disk-by-uuid-061E414C1E413649:/data/hdd4t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+      - /srv/dev-disk-by-uuid-01D7793526B9D720:/data/hdd3t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+      - /srv/dev-disk-by-uuid-B20A78010A77C141:/data/hdd1d5t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+    restart: unless-stopped
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+    hostname: plex-testing
+
+volumes:
+  plex_test_config:
+    name: plex_test_config
+    driver: local
+  plex_test_transcode:
+    name: plex_test_transcode
+    driver: local
+
+networks:
+  physical:
+    name: physical
+    driver: macvlan
+    driver_opts:
+      parent: enp4s0 # Là tên của interface mạng trên hệ thống Docker host.
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1

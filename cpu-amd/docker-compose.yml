@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Nextcloud AIO Master Container
+  nextcloud:
+    image: nextcloud/all-in-one:latest
+    container_name: nextcloud-aio-mastercontainer
+    init: true
+    restart: always
+    # ports:
+    #   - 80:80
+    #   - 8080:8080
+    #   - 8443:8443
+    networks:
+      physical:
+        ipv4_address: 192.168.1.213
+    environment: 
+      - APACHE_PORT=11000 
+      - APACHE_IP_BINDING=0.0.0.0
+      - SKIP_DOMAIN_VALIDATION=true
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # Plex Media Server
+  plex:
+    image: plexinc/pms-docker
+    container_name: plex
+    network_mode: host
+    environment:
+      - TZ=Asia/Ho_Chi_Minh         # Thay <timezone> bằng múi giờ của bạn (VD: Asia/Ho_Chi_Minh)
+      - PLEX_CLAIM=claim-k2kBPh87cAW5_Xfe-PHd  # Thay <claimToken> bằng mã token từ Plex
+    volumes:
+      - plex_config:/config    # Thư mục cấu hình Plex
+      - plex_transcode:/transcode # Thư mục tạm thời cho transcoding
+      - /srv/dev-disk-by-uuid-061E414C1E413649:/data/hdd4t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+      - /srv/dev-disk-by-uuid-01D7793526B9D720:/data/hdd3t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+      - /srv/dev-disk-by-uuid-B20A78010A77C141:/data/hdd1d5t:ro              # Thư mục chứa media (phim, nhạc, v.v.)
+    restart: unless-stopped
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+
+volumes:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer
+    driver: local
+  plex_config:
+    name: plex_config
+    driver: local
+  plex_transcode:
+    name: plex_transcode
+    driver: local
+  plex_media:
+    name: plex_media
+    driver: local
+
+networks:
+  physical:
+    name: physical
+    driver: macvlan
+    driver_opts:
+      parent: enp4s0 # Là tên của interface mạng trên hệ thống Docker host.
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
