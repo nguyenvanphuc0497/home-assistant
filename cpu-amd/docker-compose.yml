@@ -40,6 +40,25 @@ services:
     devices:
       - "/dev/bus/usb:/dev/bus/usb"
 
+  # qbittorrent
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8082
+      - TORRENTING_PORT=6881
+    volumes:
+      - qbittorrent_config:/config
+      - /srv/dev-disk-by-uuid-9a3210b2-438d-4625-b99c-de89900bac27/nas-hdd-512gb/Downloads:/downloads #optional
+    ports:
+      - 8082:8082
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
 volumes:
   nextcloud_aio_mastercontainer:
     name: nextcloud_aio_mastercontainer
@@ -52,6 +71,9 @@ volumes:
     driver: local
   plex_media:
     name: plex_media
+    driver: local
+  qbittorrent_config:
+    name: qbittorrent_config
     driver: local
 
 networks:
