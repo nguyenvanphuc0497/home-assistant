@@ -22,12 +22,33 @@ services:
       - "/dev/bus/usb:/dev/bus/usb"
     hostname: plex-testing
 
+      # qbittorrent
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent-macvlan
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - qbittorrent_config:/config
+      - /srv/dev-disk-by-uuid-9a3210b2-438d-4625-b99c-de89900bac27/nas-hdd-512gb/Downloads:/downloads #Thư mục chưa file đc download.
+    restart: unless-stopped
+    networks:
+      physical:
+        ipv4_address: 192.168.1.213
+
 volumes:
   plex_test_config:
     name: plex_test_config
     driver: local
   plex_test_transcode:
     name: plex_test_transcode
+    driver: local
+  qbittorrent_config:
+    name: qbittorrent_config
     driver: local
 
 networks:
